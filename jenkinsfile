@@ -1,21 +1,42 @@
+
 pipeline {
     agent any
 
+    tools {
+        nodejs 'NodeJS-22'
+    }
+
     stages {
-        stage('Install Dependencies') {
+        stage('Checkout') {
             steps {
-                bat 'npm install'
-                bat 'npx playwright install'
+                checkout scm
             }
         }
 
-        stage('Run Tests') {
+        stage('Install Dependencies') {
             steps {
-                script {
-                    def status = bat(script: 'npx playwright test"', returnStatus: true)
-                    if (status != 0) {
-                        echo "Tests failed, but continuing to generate reports..."
-                    }
+                bat 'npm ci'
+                bat 'npx playwright install chromium'
+            }
+        }
+
+        stage('Run Playwright Tests') {
+            steps {
+                withCredentials([
+                    string(
+                        credentialsId: 'qa-base-url',
+                        variable: 'BASE_URL'
+                    ),
+                    string(
+                        credentialsId: 'qa-manager-email',
+                        variable: 'MANAGER_EMAIL'
+                    ),
+                    string(
+                        credentialsId: 'qa-manager-password',
+                        variable: 'MANAGER_PASSWORD'
+                    )
+                ]) {
+                    bat 'npx playwright test'
                 }
             }
         }
@@ -23,21 +44,14 @@ pipeline {
 
     post {
         always {
-            echo 'Generating HTML reports...'
-
-
             publishHTML(target: [
                 reportDir: 'playwright-report',
                 reportFiles: 'index.html',
                 reportName: 'Playwright HTML Report',
                 alwaysLinkToLastBuild: true,
                 keepAll: true,
-                 alwaysLinkToLastBuild: true,
-                allowMissing: true,
-                linkRelative: false
+                allowMissing: true
             ])
-
-        
         }
     }
 }
