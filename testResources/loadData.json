@@ -1,0 +1,9 @@
+{
+    "loadName" : "demo Load 1",
+    "loadType" : " Vehicle ",
+    "source" : " Manual ",
+    "customer" : "Target Corporation",
+    "origin" : "600 Woodward Avenue, Detroit, Michigan, 48226",
+    "destination" : "233 South Wacker Drive, Chicago, Illinois, 60606",
+    "cost" : "2500"
+}

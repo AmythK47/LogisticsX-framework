@@ -1,0 +1,10 @@
+{
+    "url" : "https://tms.logisticsx.app",
+    
+    "emailDispatch" : "dispatcher2@test.com",
+    "passwordDispatch" : "Test12345#",
+
+    "emailManager" : "manager1@test.com",
+    "passwordManager" : "Test12345#"
+}
+
